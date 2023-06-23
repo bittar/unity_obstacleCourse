@@ -5,7 +5,7 @@ public class FollowPlayer : MonoBehaviour
 
     public Transform player;
     public Vector3 offset;
-    public float smoothTime;
+    public float smoothTime = 0.05f;
     private Vector3 currentVelocity = Vector3.zero;
 
     private float camBankingSpeed = 0.5f;
@@ -23,7 +23,6 @@ public class FollowPlayer : MonoBehaviour
     {
         // Bank Camera
         current = Mathf.MoveTowards(current, target, camBankingSpeed * Time.deltaTime);
-        //Debug.Log("current: " + current + " & " + "target: " + target);
         transform.rotation = Quaternion.Lerp(cameraBankingLeft, cameraBankingRight, curve.Evaluate(current));
 
         if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey("d"))
@@ -41,14 +40,28 @@ public class FollowPlayer : MonoBehaviour
             target = 0.5f;
         }
 
+       
     }
 
     private void LateUpdate()
     {
-        if (gameObject != null) { 
-        // Follow Player
-        Vector3 targetPostition = player.position + offset;
-        transform.position = Vector3.SmoothDamp(transform.position, targetPostition, ref currentVelocity, smoothTime);
-        }
+      camFollow();
+    }
+
+
+    void camFollow()
+    {
+        
+        // Follow Player (No Smoothing)
+        transform.position = player.position + offset;
+
+
+        // Follow Player (Smooth)
+        //Vector3 targetPosition = player.position + offset;
+        //transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, smoothTime * Time.deltaTime);
+
+        //Follow Player (Smooth Lerp)
+        //Vector3 smoothFollow = Vector3.Lerp(transform.position, targetPosition, smoothTime);
+        //transform.position = smoothFollow;
     }
 }

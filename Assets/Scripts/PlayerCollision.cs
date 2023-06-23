@@ -5,13 +5,18 @@ public class PlayerCollision : MonoBehaviour {
     public PlayerMovement movement;
     public Collider playerCollider;
     public GameObject playerDestroyed;
-    public Rigidbody destroyedRB;
 
     [SerializeField]
     private bool sideTouch;
 
-    public Rigidbody[] brokenRbs;
+    // Trying to find the CAMERA SCRIPT
+    public GameObject cam;
+    public FollowPlayer followplayer;
 
+    private void Start()
+    {
+        followplayer = cam.GetComponent<FollowPlayer>();
+    }
 
     private void FixedUpdate()
     {
@@ -38,19 +43,11 @@ public class PlayerCollision : MonoBehaviour {
         if (collision.collider.tag == "Obstacle" && sideTouch == false)
         {
             movement.enabled = false;
+            followplayer.enabled = false;
             movement.rb.constraints = RigidbodyConstraints.None;
             FindObjectOfType<GameManager>().endGame();
             Destroy(gameObject);
             Instantiate(playerDestroyed, transform.position, transform.rotation);
-           
-            //for (int i = 0; i < 21; i++)
-            //{
-            //    destroyedRB.velocity = movement.rb.velocity;
-            //}
-
-            
-
-
         }
 
         if (collision.collider.tag == "Ground")
