@@ -13,6 +13,10 @@ public class PlayerCollision : MonoBehaviour {
     public GameObject cam;
     public FollowPlayer followplayer;
 
+    //Particle System
+    public ParticleSystem particles;
+
+
     private void Start()
     {
         followplayer = cam.GetComponent<FollowPlayer>();
@@ -35,6 +39,9 @@ public class PlayerCollision : MonoBehaviour {
         {
             sideTouch = false;
         }
+
+        //Binds Particle System to player
+        particles.transform.position = movement.transform.position;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -43,9 +50,12 @@ public class PlayerCollision : MonoBehaviour {
 
         if (collision.collider.tag == "Obstacle" && sideTouch == false)
         {
+
             movement.enabled = false;
             followplayer.enabled = false;
             movement.rb.constraints = RigidbodyConstraints.None;
+
+            // Sets GAME OVER state
             FindObjectOfType<GameManager>().endGame();
 
             // Adds Destroyed Version of the player and destroys/removes main player.
@@ -64,6 +74,9 @@ public class PlayerCollision : MonoBehaviour {
                     rb.AddForce((impactForce + (Random.insideUnitSphere * variationScale * impactForceMag)) * -1, ForceMode.Impulse);
                 }
             }
+
+            // Starts Particle System
+            particles.Play();
         }
 
         if (collision.collider.tag == "Ground")
